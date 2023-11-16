@@ -32,8 +32,17 @@ public class TesseractTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        // Gamepad Variables
         double LJoyX = gamepad1.left_stick_x;
         double LJoyY = gamepad1.left_stick_y;
+        double RJoyX = gamepad1.right_stick_x;
+        // Motor Power Equations
+        double MaxPower = Math.max(Math.abs(LJoyY) + Math.abs(LJoyX) + Math.abs(RJoyX), 1);
+        double FLPower = (LJoyY + LJoyX + RJoyX) / MaxPower;
+        double BLPower = (LJoyY - LJoyX + RJoyX) / MaxPower;
+        double FRPower = (LJoyY - LJoyX - RJoyX) / MaxPower;
+        double BRPower = (LJoyY + LJoyX - RJoyX) / MaxPower;
+        // Directional Movement Equations (not used right now)
         Vector2D LJoyVector = new Vector2D(LJoyX, LJoyY); // Convert Pos to Vector2D
         double LJoyM = LJoyVector.getNorm(); // Magnitude
         double LJoyA = 0;
