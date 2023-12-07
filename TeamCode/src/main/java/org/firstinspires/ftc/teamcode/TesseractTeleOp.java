@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.firstinspires.ftc.teamcode.config.TesseractConfig;
 
 @TeleOp(name="Tesseract")
 public class TesseractTeleOp extends OpMode {
@@ -30,7 +31,7 @@ public class TesseractTeleOp extends OpMode {
     public DcMotor rightCraneMotor;
     public Gyroscope imu;
     public DcMotor motorTest;
-    public double easeTime = 0.01; // Alpha for Joystick Lerp
+    public double easeTime = TesseractConfig.easeAmount; // Alpha for Joystick Lerp
     public boolean easingEnabled = true; // Disable if causes problems
     // setup joystick variables
     double LJoyX = 0;
