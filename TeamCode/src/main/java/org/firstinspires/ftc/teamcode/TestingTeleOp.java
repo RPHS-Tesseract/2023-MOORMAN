@@ -67,9 +67,9 @@ public class TestingTeleOp extends OpMode {
         wheelBR.setPower(powerBR);
         wheelBL.setPower(powerBL);
 
-        oldLeftJoyY = lerp(oldLeftJoyY, leftJoyY, easeTime);
+        //oldLeftJoyY = lerp(oldLeftJoyY, leftJoyY, easeTime);
         oldRightJoyX = lerp(oldRightJoyX, rightJoyX, easeTime);
-        oldLeftJoyX = lerp(oldLeftJoyX, leftJoyX, easeTime);
+        //oldLeftJoyX = lerp(oldLeftJoyX, leftJoyX, easeTime);
         oldTriggerR = lerp(oldTriggerR, triggerR , easeTime);
         oldTriggerL = lerp(oldTriggerL, triggerL, easeTime);
     }

@@ -21,7 +21,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.config.TesseractConfig;
 
 @TeleOp(name="Tesseract")
-@Disabled
 public class TesseractTeleOp extends OpMode {
     public double lerp(double start, double target, double alpha) {
         double output = start + (target - start) * alpha;
@@ -46,12 +45,16 @@ public class TesseractTeleOp extends OpMode {
     public double easeTime = TesseractConfig.easeAmount; // Alpha for Joystick Lerp
     public boolean easingEnabled = true; // Disable if causing problems
     public boolean angleDrivingEnabled = true; // Disable if causing problems
+    public double craneTopLimit = 1.0;
+    public double craneBottomLimit = 0.0;
+    public double craneHeight = 0.0;
     // setup joystick variables
     Vector2D LJoyPos = Vector2D.ZERO;
     double RJoyX = 0.0;
     double LJoyAngle = 0.0;
     double LJoyMagnitude = 0.0;
     double currentRJX = RJoyX;
+    double craneSpeed = 10;
     Vector2D currentLJPos = Vector2D.ZERO;
 
     private void driveWithAngle(double yaw) {
@@ -67,7 +70,7 @@ public class TesseractTeleOp extends OpMode {
 
     @Override
     public void init() {
-        //imu = hardwareMap.get(Gyroscope.class, "imu");
+        // imu = hardwareMap.get(IMU.class, "imu");
         motorFR = hardwareMap.get(DcMotor.class, "FR");
         motorFL = hardwareMap.get(DcMotor.class, "FL");
         motorBR = hardwareMap.get(DcMotor.class, "BR");
@@ -149,8 +152,16 @@ public class TesseractTeleOp extends OpMode {
         motorFR.setPower(powerFR); // Reversed Motor
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR); // Reversed Motor
-        craneL.setPower((gamepad1.right_trigger - gamepad1.left_trigger) / 10);
-        craneR.setPower((gamepad1.right_trigger - gamepad1.left_trigger) / 10);
+
+        if (craneHeight < craneTopLimit) {
+            craneL.setPower(gamepad1.left_trigger / craneSpeed);
+            craneR.setPower(gamepad1.left_trigger / craneSpeed);
+        }
+
+        if (craneHeight > craneBottomLimit) {
+            craneL.setPower(-gamepad1.right_trigger / craneSpeed);
+            craneR.setPower(-gamepad1.right_trigger / craneSpeed);
+        }
 
         telemetry.addData("Front Motors: ","FL: %.3f, FR: %.3f",powerFL, powerFR);
         telemetry.addData("Rear Motors", "RL: %.3f, RR: %.3f", powerBL, powerBR);
