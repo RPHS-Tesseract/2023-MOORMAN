@@ -21,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.config.TesseractConfig;
 
 @TeleOp(name="Tesseract")
+@Disabled
 public class TesseractTeleOp extends OpMode {
     public double lerp(double start, double target, double alpha) {
         double output = start + (target - start) * alpha;
@@ -33,6 +34,7 @@ public class TesseractTeleOp extends OpMode {
     public DcMotor motorBL;
     public DcMotor motorBR;
     public DcMotor craneL;
+    public DcMotor craneR;
     double powerFL = 0;
     double powerBL = 0;
     double powerFR = 0;
@@ -52,11 +54,15 @@ public class TesseractTeleOp extends OpMode {
     double currentRJX = RJoyX;
     Vector2D currentLJPos = Vector2D.ZERO;
 
-    private void driveWithAngle(double Angle) {
-        powerFL = Math.sin(Math.atan2(LJoyPos.getX(), LJoyPos.getY())+Math.PI / 4) * LJoyMagnitude + RJoyX;
-        powerFR = Math.cos(Math.atan2(LJoyPos.getX(), LJoyPos.getY())+Math.PI / 4) * LJoyMagnitude - RJoyX;
-        powerBL = Math.cos(Math.atan2(LJoyPos.getX(), LJoyPos.getY())+Math.PI / 4) * LJoyMagnitude + RJoyX;
-        powerBR = Math.sin(Math.atan2(LJoyPos.getX(), LJoyPos.getY())+Math.PI / 4) * LJoyMagnitude - RJoyX;
+    private void driveWithAngle(double yaw) {
+        double anglePosX = Math.sin(LJoyAngle - yaw) * LJoyMagnitude;
+        double anglePosY = Math.cos(LJoyAngle - yaw) * LJoyMagnitude;
+        double MaxPower = Math.max(Math.abs(anglePosX) + Math.abs(anglePosY) + Math.abs(currentRJX), 1);
+        powerFL = (-anglePosY + anglePosX + currentRJX) / MaxPower;
+        powerBL = (-anglePosY - anglePosX + currentRJX) / MaxPower;
+        powerFR = (-anglePosY - anglePosX - currentRJX) / MaxPower;
+        powerBR = (-anglePosY + anglePosX - currentRJX) / MaxPower;
+        telemetry.addData("test: ", yaw);
     }
 
     @Override
@@ -67,6 +73,7 @@ public class TesseractTeleOp extends OpMode {
         motorBR = hardwareMap.get(DcMotor.class, "BR");
         motorBL = hardwareMap.get(DcMotor.class, "BL");
         craneL = hardwareMap.get(DcMotor.class, "LCrane");
+        craneR = hardwareMap.get(DcMotor.class, "RCrane");
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.FORWARD);
@@ -127,11 +134,11 @@ public class TesseractTeleOp extends OpMode {
         // Angle Dependent Movement (Using Gyroscope)
 
         if (angleDrivingEnabled) {
-            driveWithAngle(LJoyAngle);
+            driveWithAngle(yaw);
         }
 
         // Recalibrate orientation
-        if (gamepad1.dpad_down) {
+        if (gamepad1.a) {
             imu.resetYaw();
         }
 
@@ -142,7 +149,8 @@ public class TesseractTeleOp extends OpMode {
         motorFR.setPower(powerFR); // Reversed Motor
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR); // Reversed Motor
-        craneL.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+        craneL.setPower((gamepad1.right_trigger - gamepad1.left_trigger) / 10);
+        craneR.setPower((gamepad1.right_trigger - gamepad1.left_trigger) / 10);
 
         telemetry.addData("Front Motors: ","FL: %.3f, FR: %.3f",powerFL, powerFR);
         telemetry.addData("Rear Motors", "RL: %.3f, RR: %.3f", powerBL, powerBR);
