@@ -46,17 +46,18 @@ public class TestingTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        double leftJoyX = gamepad1.left_stick_x;
-        double leftJoyY = gamepad1.left_stick_y;
+        lJoyPos = new Vector2D(gamepad1.left_stick_x, gamepad1.left_stick_y);
+        oldLeftJoyPos = new Vector2D(0,0);
+
         double rightJoyX = gamepad1.right_stick_x;
         double triggerR = gamepad1.right_trigger;
         double triggerL = gamepad1.left_trigger;
 
-        denominator = Math.max(Math.abs(leftJoyX) + Math.abs(leftJoyY) + Math.abs(rightJoyX),1);
-        powerFL = (-leftJoyY + leftJoyX + rightJoyX) / denominator;
-        powerBL = (-leftJoyY - leftJoyX + rightJoyX) / denominator;
-        powerFR = (-leftJoyY - leftJoyX - rightJoyX) / denominator;
-        powerBR = (-leftJoyY + leftJoyX - rightJoyX) / denominator;
+        denominator = Math.max(Math.abs(lJoyPos.getX()) + Math.abs(lJoyPos.getY()) + Math.abs(rightJoyX),1);
+        powerFL = (-lJoyPos.getY() + lJoyPos.getX() + rightJoyX) / denominator;
+        powerBL = (-lJoyPos.getY() - lJoyPos.getX() + rightJoyX) / denominator;
+        powerFR = (-lJoyPos.getY() - lJoyPos.getX() - rightJoyX) / denominator;
+        powerBR = (-lJoyPos.getY() + lJoyPos.getX() - rightJoyX) / denominator;
 
         lCrane.setPower(triggerR- triggerL);
         rCrane.setPower(triggerR - triggerL);
@@ -67,9 +68,8 @@ public class TestingTeleOp extends OpMode {
         wheelBR.setPower(powerBR);
         wheelBL.setPower(powerBL);
 
-        //oldLeftJoyY = lerp(oldLeftJoyY, leftJoyY, easeTime);
+        oldLeftJoyPos = new Vector2D(lerp(oldLeftJoyPos.getX(), lJoyPos.getX(), easeTime), lerp(oldLeftJoyPos.getY(), lJoyPos.getY(), easeTime()));
         oldRightJoyX = lerp(oldRightJoyX, rightJoyX, easeTime);
-        //oldLeftJoyX = lerp(oldLeftJoyX, leftJoyX, easeTime);
         oldTriggerR = lerp(oldTriggerR, triggerR , easeTime);
         oldTriggerL = lerp(oldTriggerL, triggerL, easeTime);
     }
