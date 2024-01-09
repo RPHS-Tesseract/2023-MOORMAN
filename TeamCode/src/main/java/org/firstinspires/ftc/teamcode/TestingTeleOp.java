@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.teamcode.config.TesseractConfig;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 @TeleOp(name="Testing")
+
 public class TestingTeleOp extends OpMode {
     // Motors
     public DcMotor wheelFL;
@@ -68,7 +70,7 @@ public class TestingTeleOp extends OpMode {
         wheelBR.setPower(powerBR);
         wheelBL.setPower(powerBL);
 
-        oldLeftJoyPos = new Vector2D(lerp(oldLeftJoyPos.getX(), lJoyPos.getX(), easeTime), lerp(oldLeftJoyPos.getY(), lJoyPos.getY(), easeTime()));
+        oldLeftJoyPos = new Vector2D(lerp(oldLeftJoyPos.getX(), lJoyPos.getX(), easeTime), lerp(oldLeftJoyPos.getY(), lJoyPos.getY(), easeTime));
         oldRightJoyX = lerp(oldRightJoyX, rightJoyX, easeTime);
         oldTriggerR = lerp(oldTriggerR, triggerR , easeTime);
         oldTriggerL = lerp(oldTriggerL, triggerL, easeTime);

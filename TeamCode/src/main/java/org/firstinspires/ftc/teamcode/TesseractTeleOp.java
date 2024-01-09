@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.linear.FieldVectorPreservingVisitor;
@@ -34,6 +35,11 @@ public class TesseractTeleOp extends OpMode {
     public DcMotor motorBR;
     public DcMotor craneL;
     public DcMotor craneR;
+    public DcMotor Arm;
+    public Servo clawL;
+    public Servo clawR;
+    double servoOpenPos = 0;
+    double servoClosePos = 1;
     double powerFL = 0;
     double powerBL = 0;
     double powerFR = 0;
@@ -54,7 +60,8 @@ public class TesseractTeleOp extends OpMode {
     double LJoyAngle = 0.0;
     double LJoyMagnitude = 0.0;
     double currentRJX = RJoyX;
-    double craneSpeed = 10;
+    double craneSpeed = 1;
+    double armSpeed = 2;
     Vector2D currentLJPos = Vector2D.ZERO;
 
     private void driveWithAngle(double yaw) {
@@ -81,6 +88,10 @@ public class TesseractTeleOp extends OpMode {
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
+        Arm = hardwareMap.get(DcMotor.class, "Arm");
+        clawL = hardwareMap.get(Servo.class, "ClawL");
+        clawR = hardwareMap.get(Servo.class, "ClawR");
+        // clawR = hardwareMap.get(Servo.class, "ClawR");
 
         imu = hardwareMap.get(IMU.class, "imu");
         imuParams = new IMU.Parameters(
@@ -141,11 +152,9 @@ public class TesseractTeleOp extends OpMode {
         }
 
         // Recalibrate orientation
-        if (gamepad1.a) {
+        if (gamepad1.dpad_left) {
             imu.resetYaw();
         }
-
-
 
         // Set all motors' power
         motorFL.setPower(powerFL);
@@ -161,6 +170,24 @@ public class TesseractTeleOp extends OpMode {
         if (craneHeight > craneBottomLimit) {
             craneL.setPower(-gamepad1.right_trigger / craneSpeed);
             craneR.setPower(-gamepad1.right_trigger / craneSpeed);
+        }
+
+        if (gamepad1.dpad_up) {
+            Arm.setPower(1 / armSpeed);
+        } else if (gamepad1.dpad_down) {
+            Arm.setPower(-1 / armSpeed);
+        } else {
+            Arm.setPower(0);
+        }
+
+        if (gamepad1.a) {
+            clawL.setPosition(servoOpenPos+0.7);
+            clawR.setPosition(servoClosePos);
+        }
+
+        if (gamepad1.b) {
+            clawL.setPosition(servoClosePos);
+            clawR.setPosition(servoOpenPos);
         }
 
         telemetry.addData("Front Motors: ","FL: %.3f, FR: %.3f",powerFL, powerFR);
