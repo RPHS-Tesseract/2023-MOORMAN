@@ -15,12 +15,14 @@ public class ServoTest extends OpMode {
     public void init(){
         servo1 = hardwareMap.get(Servo.class, "ClawL");
         servo = hardwareMap.get(Servo.class, "ClawR");
+        servo.setDirection(Servo.Direction.REVERSE);
     }
 
     @Override
     public void loop(){
         servo.setPosition(gamepad1.left_stick_x);
-        servo1.setPosition(gamepad1.left_stick_x);
+        servo1.setPosition(gamepad1.left_stick_x-0.4);
+        telemetry.addData("Joystick", gamepad1.left_stick_x);
     }
 }
 

@@ -21,6 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.config.TesseractConfig;
 
+
+
 @TeleOp(name="Tesseract")
 public class TesseractTeleOp extends OpMode {
     public double lerp(double start, double target, double alpha) {
@@ -91,6 +93,7 @@ public class TesseractTeleOp extends OpMode {
         Arm = hardwareMap.get(DcMotor.class, "Arm");
         clawL = hardwareMap.get(Servo.class, "ClawL");
         clawR = hardwareMap.get(Servo.class, "ClawR");
+        clawL.setDirection(Servo.Direction.REVERSE);
         // clawR = hardwareMap.get(Servo.class, "ClawR");
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -181,13 +184,13 @@ public class TesseractTeleOp extends OpMode {
         }
 
         if (gamepad1.a) {
-            clawL.setPosition(servoOpenPos+0.7);
-            clawR.setPosition(servoClosePos);
+            clawL.setPosition(0.675);
+            clawR.setPosition(0.22);
         }
 
         if (gamepad1.b) {
-            clawL.setPosition(servoClosePos);
-            clawR.setPosition(servoOpenPos);
+            clawR.setPosition(0.0);
+            clawL.setPosition(0.45);
         }
 
         telemetry.addData("Front Motors: ","FL: %.3f, FR: %.3f",powerFL, powerFR);
